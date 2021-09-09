@@ -1,54 +1,41 @@
 Agent { 
-	var <>freq, <>fb, <>pos, <>num = 2, <>trig = 0;
-	var >synth;
+	var <>freq, <>fb, <>pos, trig = 0;
+	var synth;
 
 
-	*new{ | freq, fb, pos, num | // set base arguments on creation of Object.
-		SynthDef(\agent, {
-			var sig, pan, env;
-
-			env = EnvGen.kr(Env.perc(), gate: this.trig);
-
-			sig = SinOscFB.ar(
-				freq: this.freq,
-				feedback: this.fb);
-
-			pan = PanAz.ar(this.num, sig, this.pos);
-
-			Out.ar(0, pan*env);
-		}).add;
-		^super.new.init(freq, fb, pos, num);
+	*new{ | freq, fb, pos | // gets arguments on creation of instance.
+		^super.new.init(freq, fb, pos);
 
 	}
 
-	init { | freq, fb, pos, num | // Create the Synth. Setable parameters are frequency, feedback and panning.
+	init { | freq, fb, pos |	// Takes the class arguments and assigns them to class variables. 
 		this.freq = freq;
 		this.fb = fb;
 		this.pos = pos;
-		this.num = num;
 
+								// Create new synth using values in class variables.
 
-
-		^synth = Synth(\agent, [\freq, this.freq, \fb, this.fb, \pos, this.pos, \t_trig, 1]);
-
-	}
-
-	setInstance { | freq, pos, fb | // Sets new values to synth arguments
-		this.freq_(freq);
-		this.pos_(pos);
-		this.fb_(fb);
-		synth = Synth(\agent, [\freq, freq, \fb, fb, \pos, pos, \t_trig, 1]);
+		this.synth = Synth(\agent, [\freq, this.freq, \fb, this.fb, \pos, this.pos, \t_trig, 1]);
 
 	}
 
-	play { 
+	setInstance { | freq, pos, fb | // Sets new values to class variables.
+		this.freq = freq; 
+		this.pos = pos;
+		this.fb = fb;
+									// Creates a new Synth instance with updated values.
+		this.synth = Synth(\agent, [\freq, freq, \fb, fb, \pos, pos, \t_trig, 1]);
+
+	}
+
+	play {  // Unnecessary class method.
 		this.trig_(1);
-		synth.set(\t_trig, this.trig);
+		this.synth.set(\t_trig, this.trig);
 	}
 
-	reset {
+	reset { // Also Unnecessary.
 		this.trig_(0);
-		synth.set(\t_trig, this.trig);
+		this.synth.set(\t_trig, this.trig);
 	}
 	
 }
