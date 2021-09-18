@@ -36,7 +36,7 @@ var arr = List.new;				// List for containing instances of Agent
 				}, {
 					pos = agent.pos;
 				});
-			fb = 300 / arr.wrapAt(n - arr.size / 2).freq;
+			fb = 100 / arr.wrapAt(n - arr.size / 2).freq;
 			vol = 1000 / agent.freq % 0.5;
 				// Updates values to synth
 			agent.setInstance(freq: freq, pos: pos, fb: fb, vol: vol);
@@ -44,7 +44,8 @@ var arr = List.new;				// List for containing instances of Agent
 			rrand(time / 10, time - 0.001).wait;			// Adds some separation to each synth
 			agent.play;
 
-			format("Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ "\n|---| feedback: " ++ fb.round(0.001) ++ "\n|---| pos:      " ++ pos.round(0.001)).postln;
+			format("Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ "\n|---| feedback: "
+			++ fb.round(0.001) ++ "\n|---| pos:      " ++ pos.round(0.001) ++ "\n|------------| Agent 00" ++ n ++ "\n \n").postln;
 		};
 		time.wait;								// Wait befor running Routine again. 
 
