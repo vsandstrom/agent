@@ -1,6 +1,6 @@
 Agent { 
 
-	var <>freq = 300, <>fb = 0.4, <>pos = 0.5, <>num = 2, <>atk = 0.01, <>rel = 1, vol = 0.5, <>trig = 0;
+	var <>freq = 300, <>fb = 0.4, <>pos = 0.5, <>num = 2, <>atk = 0.01, <>rel = 1, <>vol = 0.5, <>trig = 0;
 	var server;
 	var synth;
 	var synthName;
@@ -20,7 +20,7 @@ Agent {
 		server.waitForBoot{
 
 			SynthDef(synthName, { // SynthDef called in Agent
-				arg freq = 300, fb = 0.5, pos = 0.5, num = 2, atk = 0.01, rel = 1, t_trig = 0;
+				arg freq = 300, fb = 0.5, pos = 0.5, num = 2, atk = 0.01, rel = 1, vol = 0.5, t_trig = 0;
 				var sig, pan, env;
 
 				env = EnvGen.kr(Env.perc( atk, rel ), t_trig);
@@ -30,12 +30,12 @@ Agent {
 					feedback: fb
 				);
 				
-				pan = Pan2.ar(sig, pos, env);
+				pan = Pan2.ar(sig, pos, env * vol);
 
 				// I cannot figure out why the PanAz is not working.
 				// pan = PanAz.ar( num, sig, pos );
 
-				Out.ar(0, pan * 0.2);
+				Out.ar(0, pan );
 			}).add;
 
 			server.sync;
@@ -47,7 +47,7 @@ Agent {
 				\num, this.num,
 				\atk, this.atk,
 				\rel, this.rel,
-				\vol, this.vol
+				\vol, this.vol,
 			]);
 
 		};
@@ -62,7 +62,7 @@ Agent {
 		if(rel.notNil, {this.rel_( rel )});
 		if(vol.notNil, {this.vol_( vol )});
 		
-		synth.set(\freq, freq, \fb, fb, \pos, pos, \atk, this.atk, \rel, this.rel, \t_trig, 1, \vol = vol);
+		synth.set(\freq, freq, \fb, fb, \pos, pos, \atk, this.atk, \rel, this.rel, \t_trig, 1, \vol, this.vol);
 
 	}
 
