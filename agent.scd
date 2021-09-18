@@ -54,7 +54,7 @@ var arr = List.new;				// List for containing instances of Agent
 				"Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ 
 				"\n|---| feedback: "++ fb.round(0.001) ++ 
 				"\n|---| pos:      " ++ pos.round(0.001) ++ 
-				"\n|---| vol:      " ++ .round(0.001) ++ 
+				"\n|---| vol:      " ++ vol.round(0.001) ++ 
 				"\n|------------| Agent 00" ++ n ++ "\n \n").postln;
 		};
 		time.wait;								// Wait befor running Routine again. 
