@@ -1,6 +1,6 @@
 Agent { 
 
-	var <>freq = 300, <>fb = 0.4, <>pos = 0.5, <>num = 2, <>atk = 0.01, <>rel = 1, <>trig = 0;
+	var <>freq = 300, <>fb = 0.4, <>pos = 0.5, <>num = 2, <>atk = 0.01, <>rel = 1, vol = 0.5, <>trig = 0;
 	var server;
 	var synth;
 	var synthName;
@@ -47,19 +47,22 @@ Agent {
 				\num, this.num,
 				\atk, this.atk,
 				\rel, this.rel,
+				\vol, this.vol
 			]);
 
 		};
 
 	}
 
-	setInstance { | freq, pos, fb, atk, rel | // Sets new values to class variables.
+	setInstance { | freq, pos, fb, atk, rel, vol | // Sets new values to class variables.
 		if(freq.notNil, {this.freq_( freq )});
 		if(pos.notNil, {this.pos_( pos )});
 		if(fb.notNil, {this.fb_( fb )});
 		if(atk.notNil, {this.atk_( atk )});
-		if(rel.notNil, {this.atk_( rel )});
-		synth.set(\freq, freq, \fb, fb, \pos, pos, \atk, this.atk, \rel, this.rel, \t_trig, 1);
+		if(rel.notNil, {this.rel_( rel )});
+		if(vol.notNil, {this.vol_( vol )});
+		
+		synth.set(\freq, freq, \fb, fb, \pos, pos, \atk, this.atk, \rel, this.rel, \t_trig, 1, \vol = vol);
 
 	}
 

@@ -4,15 +4,17 @@ s.boot;
 //		 variable.
 
 (
+var swarm = 50;
 var num = 2;
+var time = 0.2;
 var i = 0;						// variable to make sure we dont create new arrays for each iteration in Routine. 
 var arr = List.new;				// List for containing instances of Agent
 ~action = Routine.new({
 	inf.do({					// Continue until Routine is stopped.
 
 		if ( i == 0, {
-			arr = 10.collect{	// Create 10 instances of Agent with randomized parameters in each.
-				Agent.new(exprand(100.0, 500.0), rrand(0, 0.5), rrand(-1.0,1.0), num, rrand(0.01, 1), rrand(0.5, 2.4));
+			arr = swarm.collect{	// Create 10 instances of Agent with randomized parameters in each.
+				Agent.new(exprand(100.0, 500.0), rrand(0, 0.5), rrand(-1.0,1.0), num, rrand(0.01, 0.1), rrand(0.5, 0.8));
 			};
 			i = 1;				// Sets variable i to 1.
 			wait(2);
@@ -22,26 +24,34 @@ var arr = List.new;				// List for containing instances of Agent
 			var freq, pos, fb;
 				// Handles edgecases by wrapping around List index if out of bounds
 
-			if (arr.wrapAt( n - 1 ).freq + arr.wrapAt( n + 1 ).freq > 2000, {
+			if (arr.wrapAt( n - 1 ).freq + arr.wrapAt( n + 1 ).freq > 2000 || agent.freq == 0, {
+					
 					freq = rrand( 200.0, 500.0 ).round(agent.freq)
-				}, {
-					freq = ( arr.wrapAt( n-1 ).freq + arr.wrapAt( n+1 ).freq ).round(arr.wrapAt( n+1 ).freq);
+					// freq = rrand( 200.0, 500.0 ).round(arr.wrapAt( n-1 ).freq) % 3000
+				}, { 
+					//if ( agent.pos > 0, {
+						freq = ( arr.wrapAt( n-1 ).freq + arr.wrapAt( n+1 ).freq ).round(arr.wrapAt(n-1).freq) % 3000; 
+
+					// }, {
+					// 	freq = ( arr.wrapAt( n+1 ).freq - arr.wrapAt( n-1 ).freq ).round(arr.wrapAt( n+1 ).freq) % 3000; 
+						
+					// })
 				});
 			if ( arr.wrapAt(n + 1).pos > agent.pos, {
 					pos = arr.wrapAt(n-1).pos
 				}, {
 					pos = agent.pos;
 				});
-			fb = arr.wrapAt( n - 1 ).fb;
+			fb = 1 / arr.wrapAt(n - arr.size / 2).freq;
 				// Updates values to synth
 			agent.setInstance(freq: freq, pos: pos, fb: fb);
 
-			rrand(0.1, 0.8).wait;			// Adds some separation to each synth
+			rrand(time / 10, time - 0.001).wait;			// Adds some separation to each synth
 			agent.play;
 
-			format("Agent " ++ n ++ "--- freq: " ++ freq ++ ", feedback: " ++ fb ++ ", pos: " ++ pos ++ " <----").postln;
+			format("Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ "\n|---| feedback: " ++ fb.round(0.001) ++ "\n|---| pos:      " ++ pos.round(0.001)).postln;
 		};
-		1.wait;								// Wait befor running Routine again. 
+		time.wait;								// Wait befor running Routine again. 
 
 		// arr.do{ |n|
 		// 	arr[n].reset;
