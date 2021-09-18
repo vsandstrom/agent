@@ -24,6 +24,7 @@ var arr = List.new;				// List for containing instances of Agent
 			var freq, pos, fb, vol;
 				// Handles edgecases by wrapping around List index if out of bounds
 
+				// do stuff to frequency
 			if (arr.wrapAt( n - 1 ).freq + arr.wrapAt( n + 1 ).freq > 2000 || agent.freq == 0, {
 					
 					freq = rrand( 200.0, 500.0 ).round(agent.freq + rrand(-5.0, 5.0))
@@ -31,27 +32,32 @@ var arr = List.new;				// List for containing instances of Agent
 					freq = ( arr.wrapAt( n-1 ).freq + arr.wrapAt( n+1 ).freq ).round(arr.wrapAt(n-1).freq + rrand(-3.0, 3.0)) % 1500; 
 				});
 
+				// do stuff to panning position
 			if ( arr.wrapAt(n + 1).pos > agent.pos, {
 					pos = arr.wrapAt(n-1).pos
 				}, {
 					pos = agent.pos;
 				});
+
+				// do stuff to feedback and volume parameters
 			fb = 100 / arr.wrapAt(n - arr.size / 2).freq;
 			vol = 1000 / agent.freq % 0.5;
+
 				// Updates values to synth
 			agent.setInstance(freq: freq, pos: pos, fb: fb, vol: vol);
 
 			rrand(time / 10, time - 0.001).wait;			// Adds some separation to each synth
 			agent.play;
-
-			format("Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ "\n|---| feedback: "
-			++ fb.round(0.001) ++ "\n|---| pos:      " ++ pos.round(0.001) ++ "\n|------------| Agent 00" ++ n ++ "\n \n").postln;
+			
+				// beautiful .postln message
+			format(
+				"Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ 
+				"\n|---| feedback: "++ fb.round(0.001) ++ 
+				"\n|---| pos:      " ++ pos.round(0.001) ++ 
+				"\n|---| vol:      " ++ .round(0.001) ++ 
+				"\n|------------| Agent 00" ++ n ++ "\n \n").postln;
 		};
 		time.wait;								// Wait befor running Routine again. 
-
-		// arr.do{ |n|
-		// 	arr[n].reset;
-		// }
 
 	});
 }).play
