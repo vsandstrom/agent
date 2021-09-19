@@ -72,4 +72,3 @@ var arr = List.new;				// List for containing instances of Agent
 	});
 }).play
 );
-
