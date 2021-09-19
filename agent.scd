@@ -4,9 +4,10 @@ s.boot;
 //		 variable.
 
 (
-var swarm = 50;
-var num = 2;
-var time = 0.2;
+var swarm = 50;					// Amount of agents created
+var num = 2;					// Amount of output channels 
+var epoch = 0;					// iteration over all agents
+var time = 0.2;					// Epoch time 
 var i = 0;						// variable to make sure we dont create new arrays for each iteration in Routine. 
 var arr = List.new;				// List for containing instances of Agent
 ~action = Routine.new({
@@ -22,15 +23,23 @@ var arr = List.new;				// List for containing instances of Agent
 
 		arr.do{ | agent, n |
 			var freq, pos, fb, vol;
-				// Handles edgecases by wrapping around List index if out of bounds
 
+
+			/*------- DO FUNNY STUFF WITH PARAMETERS -------*/
+
+			
 				// do stuff to frequency
 			if (arr.wrapAt( n - 1 ).freq + arr.wrapAt( n + 1 ).freq > 2000 || agent.freq == 0, {
 					
-					freq = rrand( 200.0, 500.0 ).round(agent.freq + rrand(-5.0, 5.0))
+					freq = 
+					rrand( 200.0, 500.0 ).round(
+						agent.freq + rrand(-5.0, 5.0))
 				}, { 
-					freq = ( arr.wrapAt( n-1 ).freq + arr.wrapAt( n+1 ).freq ).round(arr.wrapAt(n-1).freq + rrand(-3.0, 3.0)) % 1500; 
-				});
+					freq = ( 
+						arr.wrapAt( n-1 ).freq + arr.wrapAt( n+1 ).freq).round(
+							arr.wrapAt(n-1).freq + rrand(-3.0, 3.0)) % 1500; 	
+				}
+			);
 
 				// do stuff to panning position
 			if ( arr.wrapAt(n + 1).pos > agent.pos, {
@@ -42,22 +51,26 @@ var arr = List.new;				// List for containing instances of Agent
 				// do stuff to feedback and volume parameters
 			fb = 100 / arr.wrapAt(n - arr.size / 2).freq;
 			vol = 1000 / agent.freq % 0.5;
+			
+
+			/*---------------- END OF FUNNY ----------------*/
+
 
 				// Updates values to synth
 			agent.setInstance(freq: freq, pos: pos, fb: fb, vol: vol);
+				
+				// Adds some separation to each synth
+			rrand(time / 10, time - 0.001).wait;			
 
-			rrand(time / 10, time - 0.001).wait;			// Adds some separation to each synth
+				// sets t_trig of synth to 1
 			agent.play;
 			
 				// beautiful .postln message
 			format(
-				"Agent 00" ++ n ++ " |-------------\n|---| freq:     " ++ freq.round(0.001) ++ 
-				"\n|---| feedback: "++ fb.round(0.001) ++ 
-				"\n|---| pos:      " ++ pos.round(0.001) ++ 
-				"\n|---| vol:      " ++ vol.round(0.001) ++ 
-				"\n|------------| Agent 00" ++ n ++ "\n \n").postln;
+				"Agent 00% |-------------\n|---| freq:     %\n|---| feedback: %\n|---| pos:      %\n|---| vol:      %\n|------------| Agent 00%\nEPOCH: %\n \n", 
+				n, freq.round(0.001), fb.round(0.001), pos.round(0.001), vol.round(0.001), n, epoch = epoch + 1).postln;
 		};
-		time.wait;								// Wait before running Routine again. 
+		time.wait;
 
 	});
 }).play

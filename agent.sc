@@ -20,22 +20,19 @@ Agent {
 		server.waitForBoot{
 
 			SynthDef(synthName, { // SynthDef called in Agent
-				arg freq = 300, fb = 0.5, pos = 0.5, num = 2, atk = 0.01, rel = 1, vol = 0.5, t_trig = 0;
+				arg freq = 300, fb = 0.5, pos = 0.5, atk = 0.01, rel = 1, vol = 0.5, t_trig = 0;
 				var sig, pan, env;
 
-				env = EnvGen.kr(Env.perc( atk, rel ), t_trig);
+				env = EnvGen.kr(Env.perc(atk, rel), t_trig);
 
 				sig = SinOscFB.ar(
 					freq: freq, 
 					feedback: fb
 				);
 				
-				pan = Pan2.ar(sig, pos, env * vol);
+				pan = PanAz.ar(num, sig, pos, env * vol);
 
-				// I cannot figure out why the PanAz is not working.
-				// pan = PanAz.ar( num, sig, pos );
-
-				Out.ar(0, pan );
+				Out.ar(0, pan);
 			}).add;
 
 			server.sync;
