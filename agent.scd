@@ -1,23 +1,19 @@
-s.boot;
-// TODO: When Routine is run, an Error is thrown: SynthDef agent not found. Don't know why...
-// TODO: Got Error: Primitive 'BasicNew' failed. --- I think I solved it by assigning synth in Agent to 'this.synth'
-//		 variable.
-
 (
 var swarm = 50;					// Amount of agents created
 var num = 2;					// Amount of output channels 
-var epoch = 0;					// iteration over all agents
-var time = 0.2;					// Epoch time 
-var i = 0;						// variable to make sure we dont create new arrays for each iteration in Routine. 
+var epoch = 1;					// Number of iteration over all agents
+var time = 0.2;					// Epoch time
+var doneOnce = false;			// variable to make sure we dont create new arrays for each iteration in Routine. 
 var arr = List.new;				// List for containing instances of Agent
+
 ~action = Routine.new({
 	inf.do({					// Continue until Routine is stopped.
 
-		if ( i == 0, {
+		if ( doneOnce == false, {
 			arr = swarm.collect{	// Create 10 instances of Agent with randomized parameters in each.
 				Agent.new(exprand(100.0, 500.0), rrand(0, 0.5), rrand(-1.0,1.0), num, rrand(0.01, 0.1), rrand(0.5, 0.8));
 			};
-			i = 1;				// Sets variable i to 1.
+			doneOnce = true;				// Sets variable i to 1.
 			wait(2);
 		});
 
@@ -68,15 +64,12 @@ var arr = List.new;				// List for containing instances of Agent
 				// beautiful .postln message
 			format(
 				"Agent 00% |-------------\n|---| freq:     %\n|---| feedback: %\n|---| pos:      %\n|---| vol:      %\n|------------| Agent 00%\nEPOCH: %\n \n", 
-				n, freq.round(0.001), fb.round(0.001), pos.round(0.001), vol.round(0.001), n, epoch = epoch + 1).postln;
+				n, freq.round(0.001), fb.round(0.001), pos.round(0.001), vol.round(0.001), n, epoch).postln;
 		};
 		time.wait;
+		epoch = epoch+1;
 
 	});
 }).play
 );
-
-~action.play;
-
-~gog = Agent.new(400, 0.2, 0.2);
 
